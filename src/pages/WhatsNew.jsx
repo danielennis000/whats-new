@@ -58,7 +58,7 @@ const WhatsNew = () => {
             },
             {
               title: 'CreateAI Builder Reaches 10,000 Users',
-              contentSnippet: 'We're celebrating a major milestone as CreateAI Builder has now been used by over 10,000 faculty and staff members.',
+                contentSnippet: 'We are celebrating a major milestone as CreateAI Builder has now been used by over 10,000 faculty and staff members.',
               pubDate: 'Fri, 05 Sep 2025 09:15:00 GMT',
               link: '#'
             },
