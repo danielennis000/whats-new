@@ -34,18 +34,46 @@ const WhatsNew = () => {
     }
   ];
 
+  // Extracts metadata from HTML content
+  const extractMetadata = (html) => {
+    if (!html) return { author: null, dates: [], tags: [] };
+    
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = html;
+
+    // Extract author
+    const authorElement = tempDiv.querySelector('span span');
+    const author = authorElement?.textContent || null;
+
+    // Extract dates
+    const timeElements = Array.from(tempDiv.querySelectorAll('time'));
+    const dates = timeElements.map(el => ({
+      datetime: el.getAttribute('datetime'),
+      text: el.textContent.trim(),
+      title: el.getAttribute('title') || ''
+    }));
+
+    // Extract tags from buttons
+    const tagElements = Array.from(tempDiv.querySelectorAll('a.btn-tag, a.btn-tag-alt-white'));
+    const tags = tagElements.map(el => ({
+      text: el.textContent.trim(),
+      link: el.getAttribute('href') || '#'
+    }));
+
+    return { author, dates, tags };
+  };
+
   // Sanitize HTML content but preserve formatting and lists
   const sanitizeContent = (html) => {
     return sanitizeHtml(html, {
       allowedTags: sanitizeHtml.defaults.allowedTags.concat([
-        'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'img', 'time'
+        'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'img'
       ]),
       allowedAttributes: {
         ...sanitizeHtml.defaults.allowedAttributes,
         '*': ['class', 'id', 'style'],
         'a': ['href', 'name', 'target', 'rel', 'title'],
-        'img': ['src', 'alt', 'title', 'width', 'height'],
-        'time': ['datetime', 'title']
+        'img': ['src', 'alt', 'title', 'width', 'height']
       },
       transformTags: {
         // Transform all headings from RSS to appropriate semantic elements
@@ -103,9 +131,10 @@ const WhatsNew = () => {
       },
       // Process only the content we want to display and exclude other elements
       exclusiveFilter: function(frame) {
-        // Remove certain elements like empty spans
+        // Remove certain elements like spans with author, time, and buttons
         return (
-          (frame.tag === 'span' && !frame.text.trim()) ||
+          (frame.tag === 'span' && frame.text.includes('atimoh')) ||
+          (frame.tag === 'time') ||
           frame.attribs?.class?.includes('btn-tag') ||
           frame.tag === 'script' ||
           frame.tag === 'iframe'
@@ -115,24 +144,26 @@ const WhatsNew = () => {
   };
 
   const processRssFeedContent = (content) => {
-    if (!content) return '';
+    if (!content) return { cleanContent: '', metadata: { author: null, dates: [], tags: [] }};
     
     // Remove any script tags with regex (sanitize-html might miss some)
     let processedContent = content.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
     
-    // Extract main content and remove unnecessary elements
-    // This would be customized based on the actual feed structure
-    const mainContentMatch = processedContent.match(/<h1[^>]*>(.*?)(?:<\/h1>|$)/i);
-    if (mainContentMatch) {
-      // Start from the h1 element
-      const startPos = processedContent.indexOf(mainContentMatch[0]);
-      if (startPos > 0) {
-        processedContent = processedContent.substring(startPos);
-      }
-    }
+    // Extract metadata before sanitizing
+    const metadata = extractMetadata(processedContent);
     
+    // Check if content contains an H1 with same title, if so remove the duplicate title
+    const titleRegex = /<h1[^>]*>([\s\S]*?)<\/h1>/i;
+    const titleMatch = processedContent.match(titleRegex);
+    if (titleMatch) {
+      // Remove the entire H1 element
+      processedContent = processedContent.replace(titleMatch[0], '');
+    }
+
     // Sanitize the HTML to ensure it's safe and properly formatted
-    return sanitizeContent(processedContent);
+    const cleanContent = sanitizeContent(processedContent);
+    
+    return { cleanContent, metadata };
   };
 
   useEffect(() => {
@@ -153,12 +184,24 @@ const WhatsNew = () => {
           throw new Error('XML parsing error');
         }
         
-        const items = Array.from(xml.querySelectorAll('item')).map(item => ({
-          title: item.querySelector('title')?.textContent || 'No Title',
-          link: item.querySelector('link')?.textContent || '#',
-          contentSnippet: processRssFeedContent(item.querySelector('description')?.textContent) || 'No Description',
-          pubDate: item.querySelector('pubDate')?.textContent || new Date().toUTCString(),
-        }));
+        const items = Array.from(xml.querySelectorAll('item')).map(item => {
+          const title = item.querySelector('title')?.textContent || 'No Title';
+          const link = item.querySelector('link')?.textContent || '#';
+          const pubDate = item.querySelector('pubDate')?.textContent || new Date().toUTCString();
+          
+          // Process the content
+          const { cleanContent, metadata } = processRssFeedContent(
+            item.querySelector('description')?.textContent
+          );
+          
+          return {
+            title,
+            link,
+            contentSnippet: cleanContent,
+            pubDate,
+            metadata
+          };
+        });
         
         setFeedItems(items);
         setError(null);
@@ -241,19 +284,69 @@ const WhatsNew = () => {
             {feedItems.map((item, index) => (
               <div key={index} className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
                 <div className="p-6">
-                  <h3 className="font-bold text-xl mb-2 text-asu-maroon">{item.title}</h3>
+                  {/* Title */}
+                  <a 
+                    href={item.link} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="inline-block mb-2"
+                  >
+                    <h3 className="font-bold text-xl text-asu-maroon hover:underline">{item.title}</h3>
+                  </a>
+                  
+                  {/* Metadata Tags Row */}
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {/* Author */}
+                    {item.metadata.author && (
+                      <span className="inline-block bg-brand-5 text-brand-4 text-xs px-3 py-1 rounded-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="inline-block h-3 w-3 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                          <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
+                        </svg>
+                        {item.metadata.author}
+                      </span>
+                    )}
+                    
+                    {/* Date Posted */}
+                    {item.metadata.dates.length > 0 && (
+                      <span className="inline-block bg-brand-3 text-brand-1 text-xs px-3 py-1 rounded-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="inline-block h-3 w-3 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                          <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
+                        </svg>
+                        {item.metadata.dates[0]?.text || formatDate(item.pubDate)}
+                      </span>
+                    )}
+                    
+                    {/* Tags */}
+                    {item.metadata.tags.map((tag, i) => (
+                      <a 
+                        key={i}
+                        href={tag.link} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="inline-block bg-asu-maroon text-white text-xs px-3 py-1 rounded-full hover:bg-opacity-90 transition-colors"
+                      >
+                        {tag.text}
+                      </a>
+                    ))}
+                  </div>
+                  
+                  {/* Content */}
                   <div className="text-gray-700 mb-4 rss-content">
                     <div dangerouslySetInnerHTML={{ __html: item.contentSnippet }} />
                   </div>
-                  <div className="flex justify-between items-center text-sm border-t pt-4 mt-4 border-gray-200">
-                    <span className="text-gray-500">{formatDate(item.pubDate)}</span>
+                  
+                  {/* Footer */}
+                  <div className="flex justify-end items-center mt-4 border-t pt-4 border-gray-200">
                     <a 
                       href={item.link} 
                       target="_blank" 
                       rel="noopener noreferrer"
-                      className="text-asu-maroon hover:underline font-medium"
+                      className="inline-flex items-center text-asu-maroon hover:underline font-medium"
                     >
-                      Read more
+                      Read full article
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" viewBox="0 0 20 20" fill="currentColor">
+                        <path fillRule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                      </svg>
                     </a>
                   </div>
                 </div>

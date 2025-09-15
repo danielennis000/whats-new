@@ -52,3 +52,22 @@ body {
 .rss-content blockquote {
   @apply border-l-4 border-gray-300 pl-4 italic my-4;
 }
+
+/* Tag bubbles with hover effects */
+.rounded-full {
+  @apply transition-all duration-200 ease-in-out;
+}
+
+.rounded-full:hover {
+  @apply shadow-md transform -translate-y-0.5;
+}
+
+/* First paragraph styling to make it stand out */
+.rss-content > div > p:first-of-type {
+  @apply text-gray-700 font-medium;
+}
+
+/* Remove duplicate h1 that matches the title */
+.rss-content h1:first-child {
+  display: none;
+}
