@@ -6,7 +6,7 @@ A prototype for a "What's New" section and product release notes page based on F
 
 - Dashboard with "What's New" section showing recent updates
 - Dedicated "What's New" page displaying more updates and RSS feed
-- Password protection (password: `aiacceleration`)
+- Password protected interface
 - Responsive design using Tailwind CSS
 - RSS feed integration from ai.asu.edu
 
@@ -30,25 +30,39 @@ A prototype for a "What's New" section and product release notes page based on F
    npm install
    ```
 
-3. Start the development server:
+3. Set up environment variables:
+   - Create a `.env` file in the root directory
+   - Add the following (replace with the actual password):
+   ```
+   VITE_APP_PASSWORD=your_password_here
+   ```
+   - Add `.env` to your `.gitignore` file
+
+4. Start the development server:
    ```
    npm run dev
    ```
 
-4. Open your browser and navigate to:
+5. Open your browser and navigate to:
    ```
    http://localhost:5173/whats-new/
    ```
 
-5. Login with password: `aiacceleration`
+6. Login using the password you set in the environment variable
 
 ## Deployment
 
 To deploy to GitHub Pages:
 
-```
-npm run deploy
-```
+1. Create a repository secret for the password in GitHub:
+   - Go to your repository settings
+   - Select "Secrets and variables" > "Actions"
+   - Add a new repository secret with the name `VITE_APP_PASSWORD` and the password value
+
+2. Deploy the application:
+   ```
+   npm run deploy
+   ```
 
 This will build the project and deploy it to the `gh-pages` branch of your repository.
 

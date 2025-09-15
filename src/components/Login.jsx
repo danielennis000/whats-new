@@ -4,10 +4,14 @@ const Login = ({ onLogin }) => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
+  // Get password from environment variable or use a default for development only
+  // In production, this should always be set via environment variables
+  const correctPassword = import.meta.env.VITE_APP_PASSWORD || 'aiacceleration';
+
   const handleSubmit = (e) => {
     e.preventDefault();
     
-    if (password === 'aiacceleration') {
+    if (password === correctPassword) {
       localStorage.setItem('isAuthenticated', 'true');
       onLogin();
     } else {
