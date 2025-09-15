@@ -64,7 +64,7 @@ const WhatsNew = () => {
             },
             {
               title: 'Workshop: AI for Course Design',
-              contentSnippet: 'Join us for a hands-on workshop where you'll learn how to leverage AI tools for effective course design and student engagement.',
+              contentSnippet: 'Join us for a hands-on workshop where you will learn how to leverage AI tools for effective course design and student engagement.',
               pubDate: 'Wed, 03 Sep 2025 13:00:00 GMT',
               link: '#'
             }
