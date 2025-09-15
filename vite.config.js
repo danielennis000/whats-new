@@ -1,10 +1,15 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
+// Determine the base path based on environment
+const base = process.env.NETLIFY === 'true' 
+  ? '/' // Use root path for Netlify
+  : '/whats-new/' // Use subfolder for GitHub Pages
+
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: '/whats-new/',
+  base: base,
   server: {
     proxy: {
       '/api/rss-feed': {

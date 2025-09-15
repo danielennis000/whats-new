@@ -14,6 +14,10 @@ document.head.appendChild(materialIconsLink);
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   
+  // Determine if we're on Netlify or GitHub Pages for the basename
+  const isNetlify = import.meta.env.NETLIFY === 'true' || window.location.hostname.includes('netlify.app');
+  const basename = isNetlify ? '/' : '/whats-new';
+  
   useEffect(() => {
     // Check if user is already authenticated
     const authStatus = localStorage.getItem('isAuthenticated');
@@ -35,7 +39,7 @@ function App() {
   };
 
   return (
-    <BrowserRouter basename="/whats-new">
+    <BrowserRouter basename={basename}>
       <Routes>
         <Route path="/login" element={
           isAuthenticated ? <Navigate to="/" /> : <Login onLogin={handleLogin} />

@@ -63,29 +63,52 @@ A prototype for a "What's New" section and product release notes page based on F
 The application fetches the RSS feed from ai.asu.edu/taxonomy/term/1/feed. Due to CORS restrictions, this requires a proxy:
 
 - **Development**: The Vite development server includes a configured proxy
-- **Production**: An Express server is included to proxy requests and serve the built application
+- **Production**: Multiple options are supported:
+  - Express server (for self-hosted deployment)
+  - Netlify redirects and functions (for Netlify deployment)
 
-## Deployment
+## Deployment Options
 
-To deploy to a production server:
+### 1. GitHub Pages Deployment
+
+To deploy to GitHub Pages (note: RSS feed will require a CORS proxy):
 
 1. Create a repository secret for the password:
    - Go to your repository settings
    - Select "Secrets and variables" > "Actions"
    - Add a new repository secret with the name `VITE_APP_PASSWORD` and the password value
 
-2. For GitHub Pages (static hosting without server-side proxying):
+2. Deploy the application:
    ```
    npm run deploy
    ```
-   **Note:** The RSS feed will not function on GitHub Pages due to CORS restrictions. A real backend would be needed.
 
-3. For hosting with server capabilities:
-   - Deploy both the built React app and the Express server
-   - Set up the server to run with:
-   ```
-   node server/index.js
-   ```
+This will build the project and deploy it to the `gh-pages` branch of your repository.
+The deployed application will be available at: `https://danielennis000.github.io/whats-new/`
+
+### 2. Netlify Deployment
+
+Netlify deployment includes a built-in CORS proxy for the RSS feed using Netlify redirects:
+
+1. Connect your GitHub repository to Netlify
+2. Add the environment variable `VITE_APP_PASSWORD` in Netlify settings
+3. Use the following build settings:
+   - Build command: `npm run netlify-build`
+   - Publish directory: `dist`
+4. Deploy!
+
+The Netlify deployment will automatically handle:
+- CORS proxy for the RSS feed
+- Proper routing for SPA navigation
+- Environment variables for password protection
+
+## Project Structure
+
+- `src/` - React application source
+- `server/` - Express server for local/self-hosted deployment
+- `functions/` - Serverless functions for Netlify deployment
+- `public/` - Static assets
+- `netlify.toml` - Netlify configuration including redirects for CORS proxy
 
 ## Built With
 
@@ -94,3 +117,4 @@ To deploy to a production server:
 - Tailwind CSS
 - React Router
 - Express (for server-side proxy)
+- Netlify Functions (for serverless deployment)

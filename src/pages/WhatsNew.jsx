@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import sanitizeHtml from 'sanitize-html';
 
 const WhatsNew = () => {
   const [feedItems, setFeedItems] = useState([]);
@@ -33,6 +34,107 @@ const WhatsNew = () => {
     }
   ];
 
+  // Sanitize HTML content but preserve formatting and lists
+  const sanitizeContent = (html) => {
+    return sanitizeHtml(html, {
+      allowedTags: sanitizeHtml.defaults.allowedTags.concat([
+        'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'img', 'time'
+      ]),
+      allowedAttributes: {
+        ...sanitizeHtml.defaults.allowedAttributes,
+        '*': ['class', 'id', 'style'],
+        'a': ['href', 'name', 'target', 'rel', 'title'],
+        'img': ['src', 'alt', 'title', 'width', 'height'],
+        'time': ['datetime', 'title']
+      },
+      transformTags: {
+        // Transform all headings from RSS to appropriate semantic elements
+        'h1': function(tagName, attribs) {
+          return {
+            tagName: 'h2',
+            attribs: {
+              class: 'text-2xl font-bold mt-4 mb-2 text-asu-maroon'
+            }
+          };
+        },
+        'ul': function(tagName, attribs) {
+          return {
+            tagName: 'ul',
+            attribs: {
+              class: 'list-disc ml-5 mb-4'
+            }
+          };
+        },
+        'ol': function(tagName, attribs) {
+          return {
+            tagName: 'ol',
+            attribs: {
+              class: 'list-decimal ml-5 mb-4'
+            }
+          };
+        },
+        'li': function(tagName, attribs) {
+          return {
+            tagName: 'li',
+            attribs: {
+              class: 'mb-1'
+            }
+          };
+        },
+        'p': function(tagName, attribs) {
+          return {
+            tagName: 'p',
+            attribs: {
+              class: 'mb-4'
+            }
+          };
+        },
+        'a': function(tagName, attribs) {
+          return {
+            tagName: 'a',
+            attribs: {
+              ...attribs,
+              class: 'text-asu-maroon hover:underline',
+              target: '_blank',
+              rel: 'noopener noreferrer'
+            }
+          };
+        }
+      },
+      // Process only the content we want to display and exclude other elements
+      exclusiveFilter: function(frame) {
+        // Remove certain elements like empty spans
+        return (
+          (frame.tag === 'span' && !frame.text.trim()) ||
+          frame.attribs?.class?.includes('btn-tag') ||
+          frame.tag === 'script' ||
+          frame.tag === 'iframe'
+        );
+      }
+    });
+  };
+
+  const processRssFeedContent = (content) => {
+    if (!content) return '';
+    
+    // Remove any script tags with regex (sanitize-html might miss some)
+    let processedContent = content.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+    
+    // Extract main content and remove unnecessary elements
+    // This would be customized based on the actual feed structure
+    const mainContentMatch = processedContent.match(/<h1[^>]*>(.*?)(?:<\/h1>|$)/i);
+    if (mainContentMatch) {
+      // Start from the h1 element
+      const startPos = processedContent.indexOf(mainContentMatch[0]);
+      if (startPos > 0) {
+        processedContent = processedContent.substring(startPos);
+      }
+    }
+    
+    // Sanitize the HTML to ensure it's safe and properly formatted
+    return sanitizeContent(processedContent);
+  };
+
   useEffect(() => {
     const fetchRSSFeed = async () => {
       try {
@@ -54,7 +156,7 @@ const WhatsNew = () => {
         const items = Array.from(xml.querySelectorAll('item')).map(item => ({
           title: item.querySelector('title')?.textContent || 'No Title',
           link: item.querySelector('link')?.textContent || '#',
-          contentSnippet: item.querySelector('description')?.textContent || 'No Description',
+          contentSnippet: processRssFeedContent(item.querySelector('description')?.textContent) || 'No Description',
           pubDate: item.querySelector('pubDate')?.textContent || new Date().toUTCString(),
         }));
         
@@ -135,22 +237,21 @@ const WhatsNew = () => {
         )}
         
         {!loading && !error && feedItems.length > 0 && (
-          <div className="space-y-6">
+          <div className="space-y-12">
             {feedItems.map((item, index) => (
               <div key={index} className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
                 <div className="p-6">
-                  <h3 className="font-bold text-lg mb-2">{item.title}</h3>
-                  <div 
-                    className="text-gray-600 mb-4"
-                    dangerouslySetInnerHTML={{ __html: item.contentSnippet }}
-                  />
-                  <div className="flex justify-between items-center text-sm">
+                  <h3 className="font-bold text-xl mb-2 text-asu-maroon">{item.title}</h3>
+                  <div className="text-gray-700 mb-4 rss-content">
+                    <div dangerouslySetInnerHTML={{ __html: item.contentSnippet }} />
+                  </div>
+                  <div className="flex justify-between items-center text-sm border-t pt-4 mt-4 border-gray-200">
                     <span className="text-gray-500">{formatDate(item.pubDate)}</span>
                     <a 
                       href={item.link} 
                       target="_blank" 
                       rel="noopener noreferrer"
-                      className="text-asu-maroon hover:underline"
+                      className="text-asu-maroon hover:underline font-medium"
                     >
                       Read more
                     </a>
