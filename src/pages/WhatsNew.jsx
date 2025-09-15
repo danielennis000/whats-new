@@ -19,7 +19,7 @@ const WhatsNew = () => {
     {
       id: 2,
       title: 'Iframe embed fixed for Canvas student experience',
-      description: 'We've fixed issues with iframe embeds in Canvas, improving the student experience when accessing CreateAI Builder through Canvas LMS.',
+      description: 'We have fixed issues with iframe embeds in Canvas, improving the student experience when accessing CreateAI Builder through Canvas LMS.',
       date: new Date('2025-09-09'),
       link: '#',
       featured: true
