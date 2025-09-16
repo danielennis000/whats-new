@@ -5,6 +5,7 @@ const WhatsNew = () => {
   const [feedItems, setFeedItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [expandedItems, setExpandedItems] = useState({});
   
   // Featured items that will always be shown at the top
   const featuredItems = [
@@ -12,6 +13,9 @@ const WhatsNew = () => {
       id: 1,
       title: 'Model availability',
       description: 'New models have been added to the platform. You can now use GPT-4o, Claude 3.5 Sonnet, and more!',
+      shortDescription: 'New AI models now available on the platform',
+      icon: 'smart_toy',
+      tooltip: "Access the latest AI models including GPT-4o, Claude 3.5 Sonnet, and more with improved performance and capabilities.",
       date: new Date('2025-09-09'),
       link: '#',
       featured: true
@@ -20,6 +24,9 @@ const WhatsNew = () => {
       id: 2,
       title: 'Iframe embed fixed for Canvas student experience',
       description: 'We have fixed issues with iframe embeds in Canvas, improving the student experience when accessing CreateAI Builder through Canvas LMS.',
+      shortDescription: 'Fixed Canvas LMS integration issues',
+      icon: 'school',
+      tooltip: "We resolved technical issues with iframe embeds in Canvas LMS, ensuring students can seamlessly access all CreateAI Builder features without disruption.",
       date: new Date('2025-09-09'),
       link: '#',
       featured: true
@@ -28,6 +35,9 @@ const WhatsNew = () => {
       id: 3,
       title: 'GPT 5 - available now on CreateAI Builder',
       description: 'GPT-5 is now available on CreateAI Builder! This latest model from OpenAI offers significantly improved reasoning, coding, and creative capabilities.',
+      shortDescription: 'Latest GPT-5 model now integrated',
+      icon: 'auto_awesome',
+      tooltip: "Experience the power of OpenAI's latest GPT-5 model with enhanced reasoning, coding abilities, and creative output capabilities.",
       date: new Date('2025-09-09'),
       link: '#',
       featured: true
@@ -131,13 +141,19 @@ const WhatsNew = () => {
       },
       // Process only the content we want to display and exclude other elements
       exclusiveFilter: function(frame) {
-        // Remove certain elements like spans with author, time, and buttons
+        // Remove certain elements like spans with author, time, buttons, and tag-related elements
         return (
           (frame.tag === 'span' && frame.text.includes('atimoh')) ||
           (frame.tag === 'time') ||
-          frame.attribs?.class?.includes('btn-tag') ||
+          (frame.tag === 'a' && (
+            frame.attribs?.class?.includes('btn-tag') || 
+            frame.attribs?.class?.includes('tag') ||
+            frame.attribs?.href?.includes('/taxonomy/term/')
+          )) ||
           frame.tag === 'script' ||
-          frame.tag === 'iframe'
+          frame.tag === 'iframe' ||
+          // Remove div containers that likely contain tags
+          (frame.tag === 'div' && frame.attribs?.class?.includes('field-tags'))
         );
       }
     });
@@ -159,7 +175,16 @@ const WhatsNew = () => {
       // Remove the entire H1 element
       processedContent = processedContent.replace(titleMatch[0], '');
     }
-
+    
+    // Remove tag-related content with regex patterns
+    // This removes div elements with class containing 'field-tags'
+    processedContent = processedContent.replace(/<div[^>]*class="[^"]*field-tags[^"]*"[^>]*>[\s\S]*?<\/div>/gi, '');
+    
+    // Remove links that are likely tags
+    processedContent = processedContent.replace(/<a[^>]*class="[^"]*btn-tag[^"]*"[^>]*>[\s\S]*?<\/a>/gi, '');
+    processedContent = processedContent.replace(/<a[^>]*class="[^"]*tag[^"]*"[^>]*>[\s\S]*?<\/a>/gi, '');
+    processedContent = processedContent.replace(/<a[^>]*href="[^"]*\/taxonomy\/term\/[^"]*"[^>]*>[\s\S]*?<\/a>/gi, '');
+    
     // Sanitize the HTML to ensure it's safe and properly formatted
     const cleanContent = sanitizeContent(processedContent);
     
@@ -217,8 +242,42 @@ const WhatsNew = () => {
     fetchRSSFeed();
   }, []);
 
-  // Format date to a readable string
+  // Format date to a "time ago" string
   const formatDate = (dateString) => {
+    try {
+      const date = new Date(dateString);
+      const now = new Date();
+      const diffMs = now - date;
+      const diffSec = Math.floor(diffMs / 1000);
+      const diffMin = Math.floor(diffSec / 60);
+      const diffHours = Math.floor(diffMin / 60);
+      const diffDays = Math.floor(diffHours / 24);
+      const diffWeeks = Math.floor(diffDays / 7);
+      const diffMonths = Math.floor(diffDays / 30);
+      const diffYears = Math.floor(diffDays / 365);
+      
+      if (diffSec < 60) {
+        return 'Just now';
+      } else if (diffMin < 60) {
+        return `${diffMin} minute${diffMin !== 1 ? 's' : ''} ago`;
+      } else if (diffHours < 24) {
+        return `${diffHours} hour${diffHours !== 1 ? 's' : ''} ago`;
+      } else if (diffDays < 7) {
+        return `${diffDays} day${diffDays !== 1 ? 's' : ''} ago`;
+      } else if (diffWeeks < 4) {
+        return `${diffWeeks} week${diffWeeks !== 1 ? 's' : ''} ago`;
+      } else if (diffMonths < 12) {
+        return `${diffMonths} month${diffMonths !== 1 ? 's' : ''} ago`;
+      } else {
+        return `${diffYears} year${diffYears !== 1 ? 's' : ''} ago`;
+      }
+    } catch (e) {
+      return 'Unknown date';
+    }
+  };
+  
+  // Format date to a full readable string (for tooltips or when full date is needed)
+  const formatFullDate = (dateString) => {
     try {
       const date = new Date(dateString);
       return date.toLocaleDateString('en-US', {
@@ -230,11 +289,19 @@ const WhatsNew = () => {
       return 'Unknown date';
     }
   };
+  
+  // Toggle expanded state for an item
+  const toggleExpanded = (id) => {
+    setExpandedItems(prev => ({
+      ...prev,
+      [id]: !prev[id]
+    }));
+  };
 
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-asu-maroon">What's New</h1>
+        <h1 className="text-3xl font-bold text-asu-maroon">What's new?</h1>
         <p className="text-gray-600">Latest updates and news about CreateAI Builder</p>
       </div>
       
@@ -243,16 +310,27 @@ const WhatsNew = () => {
         <h2 className="text-2xl font-bold mb-6">Featured Updates</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {featuredItems.map(item => (
-            <div key={item.id} className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
+            <div key={item.id} className="bg-white  overflow-hidden border border-gray-200">
               <div className="p-6">
-                <div className="flex items-start mb-4">
-                  <div className="w-1 h-5 bg-asu-maroon mr-3 flex-shrink-0"></div>
-                  <h3 className="font-bold text-lg">{item.title}</h3>
+                <div className="block items-start mb-4">
+                  <div className="text-asu-maroon mr-3">
+                    <span className="material-icons text-2xl">{item.icon}</span>
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-lg">{item.title}</h3>
+                    <p className="text-gray-600 mb-2">{item.shortDescription}</p>
+                  </div>
                 </div>
-                <p className="text-gray-600 mb-4">{item.description}</p>
-                <div className="flex justify-between items-center text-sm">
-                  <span className="text-gray-500">{formatDate(item.date)}</span>
-                  <a href={item.link} className="text-asu-maroon hover:underline">Read more</a>
+                
+                <div className="text-gray-700 mb-4 text-sm">
+                  <p>{item.tooltip}</p>
+                </div>
+                
+                <div className="flex justify-between items-center text-sm mt-4">
+                  <span className="text-gray-500">
+                    {formatDate(item.date)}
+                  </span>
+                  
                 </div>
               </div>
             </div>
@@ -282,7 +360,7 @@ const WhatsNew = () => {
         {!loading && !error && feedItems.length > 0 && (
           <div className="space-y-12">
             {feedItems.map((item, index) => (
-              <div key={index} className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
+              <div key={index} className="bg-white  overflow-hidden border border-gray-200">
                 <div className="p-6">
                   {/* Title */}
                   <a 
@@ -295,60 +373,51 @@ const WhatsNew = () => {
                   </a>
                   
                   {/* Metadata Tags Row */}
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {/* Author */}
-                    {item.metadata.author && (
-                      <span className="inline-block bg-brand-5 text-brand-4 text-xs px-3 py-1 rounded-full">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="inline-block h-3 w-3 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                          <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
-                        </svg>
-                        {item.metadata.author}
-                      </span>
-                    )}
-                    
+                  <div className="items-center gap-2 mb-4">
                     {/* Date Posted */}
-                    {item.metadata.dates.length > 0 && (
-                      <span className="inline-block bg-brand-3 text-brand-1 text-xs px-3 py-1 rounded-full">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="inline-block h-3 w-3 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                          <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
-                        </svg>
-                        {item.metadata.dates[0]?.text || formatDate(item.pubDate)}
-                      </span>
-                    )}
+                    <span className="block text-gray-500 text-xs">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="inline-block h-3 w-3 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                        <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
+                      </svg>
+                      {formatDate(item.pubDate)}
+                    </span>
                     
                     {/* Tags */}
-                    {item.metadata.tags.map((tag, i) => (
-                      <a 
-                        key={i}
-                        href={tag.link} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="inline-block bg-asu-maroon text-white text-xs px-3 py-1 rounded-full hover:bg-opacity-90 transition-colors"
-                      >
-                        {tag.text}
-                      </a>
-                    ))}
+                    <div className="flex flex-wrap mt-5">
+                      {item.metadata.tags.map((tag, i) => (
+                        <a 
+                          key={i}
+                          href={tag.link} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="inline-block bg-gray-100 text-gray-500 text-xs mr-2 mb-2 px-3 py-1 rounded-full hover:bg-opacity-90 transition-colors"
+                        >
+                          {tag.text}
+                        </a>
+                      ))}
+                    </div>
                   </div>
+                  
+                  
                   
                   {/* Content */}
-                  <div className="text-gray-700 mb-4 rss-content">
-                    <div dangerouslySetInnerHTML={{ __html: item.contentSnippet }} />
-                  </div>
+                  {expandedItems[`feed-${index}`] && (
+                    <div className="text-gray-700 mb-4 rss-content bg-gray-50 p-4 rounded-md">
+                      <div dangerouslySetInnerHTML={{ __html: item.contentSnippet }} />
+                      <p className="text-xs mt-2 text-gray-500">{formatFullDate(item.pubDate)}</p>
+                    </div>
+                  )}
+
+
+                  {/* Toggle button for content */}
+                  <button 
+                    onClick={() => toggleExpanded(`feed-${index}`)} 
+                    className="text-asu-maroon hover:underline mb-4 focus:outline-none text-sm"
+                  >
+                    {expandedItems[`feed-${index}`] ? 'See less' : 'See more'}
+                  </button>
                   
-                  {/* Footer */}
-                  <div className="flex justify-end items-center mt-4 border-t pt-4 border-gray-200">
-                    <a 
-                      href={item.link} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center text-asu-maroon hover:underline font-medium"
-                    >
-                      Read full article
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
-                      </svg>
-                    </a>
-                  </div>
+                  
                 </div>
               </div>
             ))}

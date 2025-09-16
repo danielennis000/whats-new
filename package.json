@@ -8,11 +8,12 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "predeploy": "npm run build",
+    "predeploy": "GITHUB_PAGES=true npm run build",
     "deploy": "gh-pages -d dist",
     "server": "node --experimental-modules server/index.js",
     "start": "npm run build && npm run server",
-    "netlify-build": "vite build"
+    "netlify-build": "GITHUB_PAGES=false vite build",
+    "netlify-deploy": "./netlify.sh"
   },
   "dependencies": {
     "cors": "^2.8.5",

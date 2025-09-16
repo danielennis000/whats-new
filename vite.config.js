@@ -2,9 +2,16 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
 // Determine the base path based on environment
-const base = process.env.NETLIFY === 'true' 
-  ? '/' // Use root path for Netlify
-  : '/whats-new/' // Use subfolder for GitHub Pages
+const isGitHubPages = process.env.GITHUB_PAGES === 'true'
+const isNetlify = process.env.NETLIFY === 'true'
+
+// Choose appropriate base path based on deployment platform
+let base = '/'
+if (isGitHubPages) {
+  base = '/whats-new-prototype/'
+} else if (isNetlify) {
+  base = '/'
+}
 
 // https://vitejs.dev/config/
 export default defineConfig({

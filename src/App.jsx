@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './components/Layout';
 import Login from './components/Login';
 import Dashboard from './pages/Dashboard';
@@ -14,9 +14,7 @@ document.head.appendChild(materialIconsLink);
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   
-  // Determine if we're on Netlify or GitHub Pages for the basename
-  const isNetlify = import.meta.env.NETLIFY === 'true' || window.location.hostname.includes('netlify.app');
-  const basename = isNetlify ? '/' : '/whats-new';
+  // No need for basename with HashRouter
   
   useEffect(() => {
     // Check if user is already authenticated
@@ -39,7 +37,7 @@ function App() {
   };
 
   return (
-    <BrowserRouter basename={basename}>
+    <Router>
       <Routes>
         <Route path="/login" element={
           isAuthenticated ? <Navigate to="/" /> : <Login onLogin={handleLogin} />
@@ -58,7 +56,7 @@ function App() {
         
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
-    </BrowserRouter>
+    </Router>
   );
 }
 

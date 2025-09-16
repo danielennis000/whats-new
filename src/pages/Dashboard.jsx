@@ -9,7 +9,7 @@ const Dashboard = () => {
       </div>
       
       {/* Hero Section */}
-      <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+      <div className="bg-white  p-6 mb-8">
         <div className="flex flex-col md:flex-row gap-6">
           <div className="md:w-2/3">
             <h2 className="text-2xl font-bold mb-4">Welcome to CreateAI Builder - built by ASU, for ASU</h2>
