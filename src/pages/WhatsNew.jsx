@@ -361,7 +361,7 @@ const WhatsNew = () => {
           <div className="space-y-12">
             {feedItems.map((item, index) => (
               <div key={index} className="bg-white  overflow-hidden border border-gray-200">
-                <div className="p-6">
+                <div className="p-8">
                   {/* Title */}
                   <a 
                     href={item.link} 
@@ -402,7 +402,7 @@ const WhatsNew = () => {
                   
                   {/* Content */}
                   {expandedItems[`feed-${index}`] && (
-                    <div className="text-gray-700 mb-4 rss-content bg-gray-50 p-4 rounded-md">
+                    <div className="text-gray-700 mb-4 rss-content bg-gray-50 p-8 rounded-md">
                       <div dangerouslySetInnerHTML={{ __html: item.contentSnippet }} />
                       <p className="text-xs mt-2 text-gray-500">{formatFullDate(item.pubDate)}</p>
                     </div>
