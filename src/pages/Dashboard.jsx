@@ -182,8 +182,8 @@ const Dashboard = () => {
   const prevSlide = () => {
     setCarouselIndex((prevIndex) => {
       // Calculate the previous index, ensuring we don't go below 0
-      const prevIndex = prevIndex - 1;
-      return prevIndex < 0 ? Math.ceil(filteredTemplates.length / 3) - 1 : prevIndex;
+      const newIndex = prevIndex - 1;
+      return newIndex < 0 ? Math.ceil(filteredTemplates.length / 3) - 1 : newIndex;
     });
   };
 
