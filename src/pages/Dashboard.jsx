@@ -103,19 +103,18 @@ const Dashboard = () => {
             </div>
           </div>
 
-          {/* Right Column - Image */}
-          <div className="md:w-1/2 bg-gray-100 flex items-center justify-center">
-            <div className="p-8 w-full h-full flex items-center justify-center">
-              <div className="relative w-full h-64 md:h-full">
-                <div className="absolute inset-0 bg-gray-200 flex items-center justify-center">
-                  <span className="material-icons text-gray-400 text-6xl">image</span>
-                </div>
-                {/* Placeholder for actual image */}
-                {/* <img 
-                  src="/path-to-image.jpg" 
-                  alt="Featured update illustration" 
+          {/* Right Column - Video */}
+          <div className="md:w-1/2 flex items-center justify-center p-0">
+            <div className="w-full h-full flex items-center justify-center p-0">
+              <div className="w-full h-full overflow-hidden">
+                <video 
+                  src="https://cdn.openai.com/ctf-cdn/20250805_GPT-5_ArtCard_1920x1080_16x9_DZ_v20.mp4"
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
                   className="object-cover w-full h-full"
-                /> */}
+                />
               </div>
             </div>
           </div>
