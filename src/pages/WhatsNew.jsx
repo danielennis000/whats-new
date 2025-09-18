@@ -309,32 +309,96 @@ const WhatsNew = () => {
       <div className="mb-12">
         <h2 className="text-2xl font-bold mb-6">Featured Updates</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {featuredItems.map(item => (
-            <div key={item.id} className="bg-white rounded-md shadow-md overflow-hidden">
-              <div className="p-6">
-                <div className="block items-start mb-4">
-                  <div className="text-asu-maroon mr-3">
-                    <span className="material-icons text-2xl">{item.icon}</span>
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-lg">{item.title}</h3>
-                    <p className="text-gray-600 mb-2">{item.shortDescription}</p>
-                  </div>
-                </div>
-                
-                <div className="text-gray-700 mb-4 text-sm">
-                  <p>{item.tooltip}</p>
-                </div>
-                
-                <div className="flex justify-between items-center text-sm mt-4">
-                  <span className="text-gray-500">
-                    {formatDate(item.date)}
-                  </span>
-                  
+          {/* First item with video background */}
+          <div className="bg-white rounded-md shadow-md overflow-hidden relative h-80">
+            <div className="absolute inset-0 z-0">
+              <video 
+                src="https://cdn.openai.com/ctf-cdn/20250805_GPT-5_ArtCard_1920x1080_16x9_DZ_v20.mp4"
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="object-cover w-full h-full"
+              />
+            </div>
+            <div className="relative z-10 h-full flex flex-col justify-end bg-gradient-to-t from-black/80 to-transparent p-6 text-white">
+              <div className="block items-start mb-4">
+                <div>
+                  <h3 className="font-bold text-lg">{featuredItems[0].title}</h3>
+                  <p className="text-white/80 mb-2">{featuredItems[0].shortDescription}</p>
                 </div>
               </div>
+              
+              <div className="text-white/90 mb-4 text-sm">
+                <p>{featuredItems[0].tooltip}</p>
+              </div>
+              
+              <div className="flex justify-between items-center text-sm mt-4">
+                <span className="text-white/70">
+                  {formatDate(featuredItems[0].date)}
+                </span>
+              </div>
             </div>
-          ))}
+          </div>
+          
+          {/* Second item with site logo background */}
+          <div className="bg-white rounded-md shadow-md overflow-hidden relative h-80">
+            <div className="absolute inset-0 z-0 p-[20%] bg-gray-50 flex items-center justify-center">
+              <img 
+                src="/images/site-logo.png" 
+                alt="ASU Create AI Builder Logo" 
+                className="object-contain w-full h-full"
+              />
+            </div>
+            <div className="relative z-10 h-full flex flex-col justify-end bg-gradient-to-t from-white to-transparent p-6">
+              <div className="block items-start mb-4">
+                <div>
+                  <h3 className="font-bold text-lg">{featuredItems[1].title}</h3>
+                  <p className="text-gray-600 mb-2">{featuredItems[1].shortDescription}</p>
+                </div>
+              </div>
+              
+              <div className="text-gray-700 mb-4 text-sm">
+                <p>{featuredItems[1].tooltip}</p>
+              </div>
+              
+              <div className="flex justify-between items-center text-sm mt-4">
+                <span className="text-gray-500">
+                  {formatDate(featuredItems[1].date)}
+                </span>
+              </div>
+            </div>
+          </div>
+          
+          {/* Third item with O4-mini image background */}
+          <div className="bg-white rounded-md shadow-md overflow-hidden relative h-80">
+            <div className="absolute inset-0 z-0">
+              <img 
+                src="https://cdn.openai.com/API/docs/images/model-page/model-art/o4-mini.jpg" 
+                alt="GPT-5 Visualization" 
+                className="object-cover w-full h-full"
+              />
+            </div>
+            <div className="relative z-10 h-full flex flex-col justify-end bg-gradient-to-t from-black/80 to-transparent p-6 text-white">
+              <div className="block items-start mb-4">
+                <div>
+                  <h3 className="font-bold text-lg">{featuredItems[2].title}</h3>
+                  <p className="text-white/80 mb-2">{featuredItems[2].shortDescription}</p>
+                </div>
+              </div>
+              
+              <div className="text-white/90 mb-4 text-sm">
+                <p>{featuredItems[2].tooltip}</p>
+              </div>
+              
+              <div className="flex justify-between items-center text-sm mt-4">
+                <span className="text-white/70">
+                  {formatDate(featuredItems[2].date)}
+                </span>
+              </div>
+            </div>
+          </div>
+          
         </div>
       </div>
       
