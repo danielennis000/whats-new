@@ -30,12 +30,112 @@ const Dashboard = () => {
   };
 
   // Template items
-  const templates = Array.from({ length: 12 }, (_, index) => ({
-    id: index + 1,
-    name: `Template ${index + 1}`,
-    description: `Description for template ${index + 1}`,
-    icon: ["edit_document", "model_training", "code", "integration_instructions"][index % 4]
-  }));
+  const templates = [
+    {
+      id: 1,
+      name: "Classroom and Curriculum Design",
+      description: "This template can be tailored to your individual course structure, material, and lesson plans to help create engaging learning experiences",
+      icon: "school",
+      iconColor: "text-asu-maroon",
+      buttonText: "Use this Template"
+    },
+    {
+      id: 2,
+      name: "Learning Objectives and Lesson Planning",
+      description: "Define custom learning objectives, goals, or structured lessons that align with ASU educational standards",
+      icon: "menu_book",
+      iconColor: "text-orange-500",
+      buttonText: "Use this Template"
+    },
+    {
+      id: 3,
+      name: "Syllabot",
+      description: "Add your course syllabus to this Syllabot Template to allow users to interact with your syllabus content using AI",
+      icon: "build",
+      iconColor: "text-blue-500",
+      buttonText: "Use this Template"
+    },
+    {
+      id: 4,
+      name: "Accessibility and Customer Support",
+      description: "Upload custom knowledge base and system instructions to make an AI project to answer frequently answered questions in your department",
+      icon: "accessibility",
+      iconColor: "text-yellow-500",
+      buttonText: "Use this Template"
+    },
+    {
+      id: 5,
+      name: "Idea Generation and Planning",
+      description: "Let AI guide your planning and brainstorming process with Design Thinking that can conform to any project idea",
+      icon: "lightbulb",
+      iconColor: "text-blue-500",
+      buttonText: "Use this Template"
+    },
+    {
+      id: 6,
+      name: "Data Analysis and Insights",
+      description: "Engage with a fine-tuned Data Analysis & Insights template to convert programming language, write SQL, or ask about sentiment analysis",
+      icon: "insights",
+      iconColor: "text-orange-500",
+      buttonText: "Use this Template"
+    },
+    {
+      id: 7,
+      name: "Presentation and Reporting",
+      description: "Use this template to structure your reports and presentations and tell a clear, impactful story with your insights",
+      icon: "bar_chart",
+      iconColor: "text-asu-maroon",
+      buttonText: "Use this Template"
+    },
+    {
+      id: 8,
+      name: "Instructional Design and Training Simulations",
+      description: "Use this to create training programs, interactive learning modules and more based on your target audience, goals and content",
+      icon: "school",
+      iconColor: "text-asu-maroon",
+      buttonText: "Use this Template"
+    },
+    {
+      id: 9,
+      name: "Content Creation and Report Writing",
+      description: "Aids in drafting, editing and refining written content for reports, communication and creative projects",
+      icon: "edit_note",
+      iconColor: "text-asu-maroon",
+      buttonText: "Use this Template"
+    },
+    {
+      id: 10,
+      name: "Research Support",
+      description: "This template will help you plan your research process, starting from literature review to organizing your research output",
+      icon: "science",
+      iconColor: "text-orange-500",
+      buttonText: "Use this Template"
+    },
+    {
+      id: 11,
+      name: "Friendly AI Explainer",
+      description: "Learn to use CreateAI Builder: RAG, Context, LLM, Agents; prompt engineering strategies; evals; hallucination; different models strengths and weaknesses; speed; tokens; and more",
+      icon: "psychology",
+      iconColor: "text-orange-500",
+      buttonText: "Use this Template"
+    },
+    {
+      id: 12,
+      name: "Job Search Prompt",
+      description: "AI Resume Writing Assistant",
+      icon: "description",
+      iconColor: "text-yellow-500",
+      buttonText: "Use this Template"
+    },
+    {
+      id: 13,
+      name: "New AI project",
+      description: "Start a new AI project with empty fields",
+      icon: "add_circle",
+      iconColor: "text-orange-500",
+      buttonText: "Create New Project"
+    }
+  ];
 
   // Getting started guides
   const guides = [
@@ -76,10 +176,8 @@ const Dashboard = () => {
           {/* Left Column - Content */}
           <div className="p-8 md:w-1/2">
             <div className="flex items-center mb-4">
-              <div className="bg-brand-3 text-brand-1 p-3 rounded-full mr-4">
-                <span className="material-icons text-3xl">{featuredUpdate.icon}</span>
-              </div>
-              <p className="text-sm uppercase tracking-wider font-semibold text-brand-1">
+              
+              <p className="text-sm uppercase tracking-wider font-semibold text-gray-400">
                 {featuredUpdate.preHeader}
               </p>
             </div>
@@ -127,14 +225,17 @@ const Dashboard = () => {
           <h2 className="text-2xl font-bold text-gray-800">Templates</h2>
           <Link to="/templates" className="text-brand-1 hover:underline font-medium">View All</Link>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
           {templates.map(template => (
-            <div key={template.id} className="bg-white p-4 rounded-md shadow-md hover:shadow-lg transition-all">
-              <div className="text-brand-1 mb-2">
+            <div key={template.id} className="bg-white p-6 rounded-md shadow-md hover:shadow-lg transition-all flex flex-col h-full">
+              <div className={`${template.iconColor} mb-3`}>
                 <span className="material-icons text-2xl">{template.icon}</span>
               </div>
-              <h3 className="font-bold mb-1">{template.name}</h3>
-              <p className="text-gray-600 text-sm">{template.description}</p>
+              <h3 className="font-bold mb-2 text-lg">{template.name}</h3>
+              <p className="text-gray-600 text-sm mb-4 flex-grow">{template.description}</p>
+              <Link to="/templates" className="text-asu-maroon hover:underline font-medium text-sm">
+                {template.buttonText}
+              </Link>
             </div>
           ))}
         </div>
