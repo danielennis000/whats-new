@@ -10,7 +10,7 @@ const WhatsNew = () => {
   // Featured items that will always be shown at the top
   const featuredItems = [
     {
-      id: 1,
+      id: 3,
       title: 'Model availability',
       description: 'New models have been added to the platform. You can now use GPT-4o, Claude 3.5 Sonnet, and more!',
       shortDescription: 'New AI models now available on the platform',
@@ -32,7 +32,7 @@ const WhatsNew = () => {
       featured: true
     },
     {
-      id: 3,
+      id: 1,
       title: 'GPT 5 - available now on CreateAI Builder',
       description: 'GPT-5 is now available on CreateAI Builder! This latest model from OpenAI offers significantly improved reasoning, coding, and creative capabilities.',
       shortDescription: 'Latest GPT-5 model now integrated',
