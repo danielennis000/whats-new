@@ -1,9 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 
 const Dashboard = () => {
   const [userName, setUserName] = useState('Daniel');
   const [timeOfDay, setTimeOfDay] = useState('');
+  const [carouselIndex, setCarouselIndex] = useState(0);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedTemplate, setSelectedTemplate] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [newProjectTitle, setNewProjectTitle] = useState('');
+  const [newProjectDescription, setNewProjectDescription] = useState('');
 
   useEffect(() => {
     // Determine time of day for greeting
@@ -157,9 +163,142 @@ const Dashboard = () => {
     { id: 2, title: 'Customer Support Bot', sharedBy: 'Jamie Smith' },
     { id: 3, title: 'Data Analysis Dashboard', sharedBy: 'Morgan Taylor' }
   ];
+  
+  // Filter templates based on search query
+  const filteredTemplates = templates.filter(template => 
+    template.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    template.description.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  // Handle carousel navigation
+  const nextSlide = () => {
+    setCarouselIndex((prevIndex) => {
+      // Calculate the next index, ensuring we don't go beyond the available templates
+      const nextIndex = prevIndex + 1;
+      return nextIndex >= Math.ceil(filteredTemplates.length / 3) ? 0 : nextIndex;
+    });
+  };
+
+  const prevSlide = () => {
+    setCarouselIndex((prevIndex) => {
+      // Calculate the previous index, ensuring we don't go below 0
+      const prevIndex = prevIndex - 1;
+      return prevIndex < 0 ? Math.ceil(filteredTemplates.length / 3) - 1 : prevIndex;
+    });
+  };
+
+  // Handle template selection for modal
+  const openTemplateModal = (template) => {
+    setSelectedTemplate(template);
+    setNewProjectTitle(`New ${template.name}`);
+    setNewProjectDescription('');
+    setShowModal(true);
+  };
+
+  // Close modal
+  const closeModal = () => {
+    setShowModal(false);
+    setSelectedTemplate(null);
+    setNewProjectTitle('');
+    setNewProjectDescription('');
+  };
+
+  // Handle creation of new project from template
+  const createFromTemplate = () => {
+    // In a real app, this would make an API call to create a new project
+    console.log('Creating new project:', {
+      templateId: selectedTemplate.id,
+      title: newProjectTitle,
+      description: newProjectDescription
+    });
+    
+    // Close the modal
+    closeModal();
+  };
 
   return (
     <div className="max-w-6xl mx-auto px-4">
+      {/* Template Detail Modal */}
+      {showModal && selectedTemplate && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-md shadow-lg w-full max-w-3xl max-h-[90vh] overflow-y-auto">
+            <div className="p-6 border-b border-gray-200">
+              <div className="flex justify-between items-start">
+                <div className="flex items-center gap-3">
+                  <div className={`${selectedTemplate.iconColor} p-2 rounded-md`}>
+                    <span className="material-icons text-2xl">{selectedTemplate.icon}</span>
+                  </div>
+                  <h2 className="text-2xl font-bold">{selectedTemplate.name}</h2>
+                </div>
+                <button 
+                  onClick={closeModal}
+                  className="text-gray-500 hover:text-gray-700"
+                  aria-label="Close modal"
+                >
+                  <span className="material-icons">close</span>
+                </button>
+              </div>
+            </div>
+            
+            <div className="p-6">
+              <div className="mb-8">
+                <h3 className="font-semibold text-lg mb-2">About this template</h3>
+                <p className="text-gray-700">{selectedTemplate.description}</p>
+              </div>
+              
+              <div className="mb-6">
+                <label className="block text-gray-700 font-medium mb-2">
+                  Project Title
+                </label>
+                <input
+                  type="text"
+                  className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-asu-maroon"
+                  value={newProjectTitle}
+                  onChange={(e) => setNewProjectTitle(e.target.value)}
+                  placeholder="Enter project title"
+                />
+              </div>
+              
+              <div className="mb-6">
+                <label className="block text-gray-700 font-medium mb-2">
+                  Project Description (optional)
+                </label>
+                <textarea
+                  className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-asu-maroon min-h-[100px]"
+                  value={newProjectDescription}
+                  onChange={(e) => setNewProjectDescription(e.target.value)}
+                  placeholder="Enter project description"
+                ></textarea>
+              </div>
+            </div>
+            
+            <div className="p-6 border-t border-gray-200 flex justify-between">
+              <button
+                onClick={closeModal}
+                className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+              >
+                Cancel
+              </button>
+              
+              <div className="flex gap-3">
+                <Link
+                  to={`/templates/${selectedTemplate.id}`}
+                  className="px-4 py-2 border border-asu-maroon text-asu-maroon rounded-md hover:bg-asu-maroon/5 transition-colors"
+                >
+                  View Template Details
+                </Link>
+                <button
+                  onClick={createFromTemplate}
+                  disabled={!newProjectTitle.trim()}
+                  className={`px-4 py-2 bg-asu-maroon text-white rounded-md transition-all transform hover:-translate-y-0.5 hover:shadow-md ${!newProjectTitle.trim() ? 'opacity-60 cursor-not-allowed' : ''}`}
+                >
+                  Create Project
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       {/* Personalized Greeting */}
       <div className="mb-8">
         <h1 className="text-4xl font-bold text-gray-800 mb-2">
@@ -225,19 +364,83 @@ const Dashboard = () => {
           <h2 className="text-2xl font-bold text-gray-800">Templates</h2>
           <Link to="/templates" className="text-brand-1 hover:underline font-medium">View All</Link>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
-          {templates.map(template => (
-            <div key={template.id} className="bg-white p-6 rounded-md shadow-md hover:shadow-lg transition-all flex flex-col h-full">
-              <div className={`${template.iconColor} mb-3`}>
-                <span className="material-icons text-2xl">{template.icon}</span>
+        
+        {/* Search bar */}
+        <div className="mb-6 relative">
+          <input
+            type="text"
+            placeholder="Search templates..."
+            className="w-full p-3 pl-10 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-asu-maroon"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+          <span className="material-icons absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+            search
+          </span>
+        </div>
+        
+        {/* Templates carousel */}
+        <div className="relative">
+          {/* Carousel navigation */}
+          <div className="absolute top-1/2 left-0 transform -translate-y-1/2 -translate-x-6 z-10">
+            <button 
+              onClick={prevSlide}
+              className="bg-white rounded-full shadow-md p-2 hover:bg-gray-100 transition-all"
+              aria-label="Previous templates"
+            >
+              <span className="material-icons">arrow_back</span>
+            </button>
+          </div>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 overflow-hidden">
+            {filteredTemplates.length > 0 ? (
+              filteredTemplates
+                .slice(carouselIndex * 3, carouselIndex * 3 + 3)
+                .map(template => (
+                  <div key={template.id} className="bg-white p-6 rounded-md shadow-md hover:shadow-lg transition-all flex flex-col h-full">
+                    <div className={`${template.iconColor} mb-3`}>
+                      <span className="material-icons text-2xl">{template.icon}</span>
+                    </div>
+                    <h3 className="font-bold mb-2 text-lg">{template.name}</h3>
+                    <p className="text-gray-600 text-sm mb-4 flex-grow">{template.description}</p>
+                    <button 
+                      onClick={() => openTemplateModal(template)}
+                      className="text-asu-maroon hover:underline font-medium text-sm text-left"
+                    >
+                      {template.buttonText}
+                    </button>
+                  </div>
+                ))
+            ) : (
+              <div className="col-span-3 py-12 text-center">
+                <p className="text-gray-500">No templates matching your search criteria</p>
               </div>
-              <h3 className="font-bold mb-2 text-lg">{template.name}</h3>
-              <p className="text-gray-600 text-sm mb-4 flex-grow">{template.description}</p>
-              <Link to="/templates" className="text-asu-maroon hover:underline font-medium text-sm">
-                {template.buttonText}
-              </Link>
+            )}
+          </div>
+          
+          <div className="absolute top-1/2 right-0 transform -translate-y-1/2 translate-x-6 z-10">
+            <button 
+              onClick={nextSlide}
+              className="bg-white rounded-full shadow-md p-2 hover:bg-gray-100 transition-all"
+              aria-label="Next templates"
+            >
+              <span className="material-icons">arrow_forward</span>
+            </button>
+          </div>
+          
+          {/* Carousel indicators */}
+          {filteredTemplates.length > 3 && (
+            <div className="flex justify-center mt-4">
+              {Array.from({ length: Math.ceil(filteredTemplates.length / 3) }).map((_, index) => (
+                <button
+                  key={index}
+                  className={`mx-1 h-2 w-2 rounded-full ${index === carouselIndex ? 'bg-asu-maroon' : 'bg-gray-300'}`}
+                  onClick={() => setCarouselIndex(index)}
+                  aria-label={`Go to template set ${index + 1}`}
+                ></button>
+              ))}
             </div>
-          ))}
+          )}
         </div>
       </div>
       
