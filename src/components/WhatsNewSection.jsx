@@ -58,7 +58,7 @@ const WhatsNewSection = () => {
       
       <div className="flex space-x-4 overflow-x-auto pb-4">
         {newsItems.map(item => (
-          <div key={item.id} className="bg-white p-4  w-64 min-w-64 border border-gray-200">
+          <div key={item.id} className="bg-white p-4 rounded-md shadow-md w-64 min-w-64">
             <div className="block items-start mb-3">
               <div className="block text-asu-maroon mr-3">
                 <span className="material-icons text-2xl">{item.icon}</span>
@@ -81,7 +81,7 @@ const WhatsNewSection = () => {
           </div>
         ))}
         
-        <div className="bg-white p-4  w-64 min-w-64 border border-gray-200 flex items-center justify-center">
+        <div className="bg-white p-4 rounded-md shadow-md w-64 min-w-64 flex items-center justify-center">
           <Link to="/whats-new" className="text-asu-maroon hover:underline font-medium">
             See all updates
           </Link>

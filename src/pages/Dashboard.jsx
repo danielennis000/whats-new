@@ -71,7 +71,7 @@ const Dashboard = () => {
       </div>
       
       {/* Featured Update - Hero Section */}
-      <div className="mb-12 bg-white rounded-xl shadow-lg overflow-hidden">
+      <div className="mb-12 bg-white rounded-md shadow-md overflow-hidden">
         <div className="flex flex-col md:flex-row">
           {/* Left Column - Content */}
           <div className="p-8 md:w-1/2">
@@ -130,7 +130,7 @@ const Dashboard = () => {
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {templates.map(template => (
-            <div key={template.id} className="bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition-all">
+            <div key={template.id} className="bg-white p-4 rounded-md shadow-md hover:shadow-lg transition-all">
               <div className="text-brand-1 mb-2">
                 <span className="material-icons text-2xl">{template.icon}</span>
               </div>
@@ -149,7 +149,7 @@ const Dashboard = () => {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {guides.map(guide => (
-            <div key={guide.id} className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-all">
+            <div key={guide.id} className="bg-white p-6 rounded-md shadow-md hover:shadow-lg transition-all">
               <span className="material-icons text-3xl text-brand-4 mb-3">{guide.icon}</span>
               <h3 className="font-bold text-lg mb-2">{guide.title}</h3>
               <p className="text-gray-600 text-sm">Learn the essential steps to get started</p>
@@ -166,7 +166,7 @@ const Dashboard = () => {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {recentProjects.map(project => (
-            <div key={project.id} className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-all">
+            <div key={project.id} className="bg-white p-6 rounded-md shadow-md hover:shadow-lg transition-all">
               <h3 className="font-bold text-lg mb-2">{project.title}</h3>
               <p className="text-gray-500 text-sm">Last edited: {project.lastEdited}</p>
             </div>
@@ -182,7 +182,7 @@ const Dashboard = () => {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {sharedProjects.map(project => (
-            <div key={project.id} className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-all">
+            <div key={project.id} className="bg-white p-6 rounded-md shadow-md hover:shadow-lg transition-all">
               <h3 className="font-bold text-lg mb-2">{project.title}</h3>
               <p className="text-gray-500 text-sm">Shared by: {project.sharedBy}</p>
             </div>

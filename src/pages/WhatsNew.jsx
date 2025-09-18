@@ -310,7 +310,7 @@ const WhatsNew = () => {
         <h2 className="text-2xl font-bold mb-6">Featured Updates</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {featuredItems.map(item => (
-            <div key={item.id} className="bg-white  overflow-hidden border border-gray-200">
+            <div key={item.id} className="bg-white rounded-md shadow-md overflow-hidden">
               <div className="p-6">
                 <div className="block items-start mb-4">
                   <div className="text-asu-maroon mr-3">
@@ -360,7 +360,7 @@ const WhatsNew = () => {
         {!loading && !error && feedItems.length > 0 && (
           <div className="space-y-12">
             {feedItems.map((item, index) => (
-              <div key={index} className="bg-white  overflow-hidden border border-gray-200">
+              <div key={index} className="bg-white rounded-md shadow-md overflow-hidden">
                 <div className="p-8">
                   {/* Title */}
                   <a 
