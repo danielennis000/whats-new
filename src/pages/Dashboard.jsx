@@ -388,11 +388,11 @@ const Dashboard = () => {
               className="bg-white rounded-full shadow-md p-2 hover:bg-gray-100 transition-all"
               aria-label="Previous templates"
             >
-              <span className="material-icons">arrow_back</span>
+              <span className="material-icons" style={{ margin: '5px' }}>arrow_back</span>
             </button>
           </div>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 overflow-hidden">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
             {filteredTemplates.length > 0 ? (
               filteredTemplates
                 .slice(carouselIndex * 3, carouselIndex * 3 + 3)
@@ -424,7 +424,7 @@ const Dashboard = () => {
               className="bg-white rounded-full shadow-md p-2 hover:bg-gray-100 transition-all"
               aria-label="Next templates"
             >
-              <span className="material-icons">arrow_forward</span>
+              <span className="material-icons" style={{ margin: '5px' }}>arrow_forward</span>
             </button>
           </div>
           
