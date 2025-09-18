@@ -152,16 +152,58 @@ const Dashboard = () => {
 
   // Recent projects
   const recentProjects = [
-    { id: 1, title: 'Chat Interface Project', lastEdited: '2 hours ago' },
-    { id: 2, title: 'Content Generator', lastEdited: '1 day ago' },
-    { id: 3, title: 'Sentiment Analysis Tool', lastEdited: '3 days ago' }
+    { 
+      id: 1, 
+      title: 'Chat Interface Project', 
+      description: 'A responsive chat UI with real-time message delivery and typing indicators.', 
+      owner: 'You', 
+      ownerImage: 'https://ui-avatars.com/api/?name=You&background=random',
+      lastEdited: '2 hours ago' 
+    },
+    { 
+      id: 2, 
+      title: 'Content Generator', 
+      description: 'AI-powered tool that creates engaging blog posts and social media content.', 
+      owner: 'You', 
+      ownerImage: 'https://ui-avatars.com/api/?name=You&background=random',
+      lastEdited: '1 day ago' 
+    },
+    { 
+      id: 3, 
+      title: 'Sentiment Analysis Tool', 
+      description: 'Analyzes customer feedback and categorizes sentiment with 92% accuracy.', 
+      owner: 'You', 
+      ownerImage: 'https://ui-avatars.com/api/?name=You&background=random',
+      lastEdited: '3 days ago' 
+    }
   ];
 
   // Shared projects
   const sharedProjects = [
-    { id: 1, title: 'Team Collaboration Project', sharedBy: 'Alex Kim' },
-    { id: 2, title: 'Customer Support Bot', sharedBy: 'Jamie Smith' },
-    { id: 3, title: 'Data Analysis Dashboard', sharedBy: 'Morgan Taylor' }
+    { 
+      id: 1, 
+      title: 'Team Collaboration Project', 
+      description: 'A shared workspace for the marketing team to collaborate on campaign assets.', 
+      sharedBy: 'Alex Kim', 
+      ownerImage: 'https://ui-avatars.com/api/?name=Alex+Kim&background=random',
+      lastEdited: '5 hours ago' 
+    },
+    { 
+      id: 2, 
+      title: 'Customer Support Bot', 
+      description: 'Automated support assistant that handles common customer inquiries.', 
+      sharedBy: 'Jamie Smith', 
+      ownerImage: 'https://ui-avatars.com/api/?name=Jamie+Smith&background=random',
+      lastEdited: '2 days ago' 
+    },
+    { 
+      id: 3, 
+      title: 'Data Analysis Dashboard', 
+      description: 'Interactive visualization of quarterly sales and customer engagement metrics.', 
+      sharedBy: 'Morgan Taylor', 
+      ownerImage: 'https://ui-avatars.com/api/?name=Morgan+Taylor&background=random',
+      lastEdited: '1 week ago' 
+    }
   ];
   
   // Filter templates based on search query
@@ -470,8 +512,25 @@ const Dashboard = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {recentProjects.map(project => (
             <div key={project.id} className="bg-white p-6 rounded-md shadow-md hover:shadow-lg transition-all">
-              <h3 className="font-bold text-lg mb-2">{project.title}</h3>
-              <p className="text-gray-500 text-sm">Last edited: {project.lastEdited}</p>
+              <div className="flex justify-between items-start mb-4">
+                <h3 className="font-bold text-lg mb-1">{project.title}</h3>
+                <img
+                  src={project.ownerImage}
+                  alt={project.owner}
+                  className="w-8 h-8 rounded-full"
+                />
+              </div>
+              <p className="text-gray-700 text-sm mb-4">{project.description}</p>
+              <div className="flex justify-between items-center text-sm">
+                <div className="flex items-center">
+                  <span className="material-icons text-gray-400 mr-1 text-sm">person</span>
+                  <span className="text-gray-600">{project.owner}</span>
+                </div>
+                <div className="text-gray-500">
+                  <span className="material-icons text-gray-400 mr-1 text-sm">schedule</span>
+                  {project.lastEdited}
+                </div>
+              </div>
             </div>
           ))}
         </div>
@@ -486,8 +545,25 @@ const Dashboard = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {sharedProjects.map(project => (
             <div key={project.id} className="bg-white p-6 rounded-md shadow-md hover:shadow-lg transition-all">
-              <h3 className="font-bold text-lg mb-2">{project.title}</h3>
-              <p className="text-gray-500 text-sm">Shared by: {project.sharedBy}</p>
+              <div className="flex justify-between items-start mb-4">
+                <h3 className="font-bold text-lg mb-1">{project.title}</h3>
+                <img
+                  src={project.ownerImage}
+                  alt={project.sharedBy}
+                  className="w-8 h-8 rounded-full"
+                />
+              </div>
+              <p className="text-gray-700 text-sm mb-4">{project.description}</p>
+              <div className="flex justify-between items-center text-sm">
+                <div className="flex items-center">
+                  <span className="material-icons text-gray-400 mr-1 text-sm">person_add</span>
+                  <span className="text-gray-600">Shared by: {project.sharedBy}</span>
+                </div>
+                <div className="text-gray-500">
+                  <span className="material-icons text-gray-400 mr-1 text-sm">schedule</span>
+                  {project.lastEdited}
+                </div>
+              </div>
             </div>
           ))}
         </div>
