@@ -4,7 +4,16 @@ const Sidebar = () => {
   return (
     <aside className="w-64 h-screen bg-gray-50 text-gray-800 fixed left-0 top-0 overflow-y-auto">
       <div className="p-6 border-b border-white/20">
-        <h1 className="text-xl font-bold">CreateAI Builder</h1>
+        <div className="flex flex-col items-center mb-4">
+          <div className="h-12 mb-2">
+            <img 
+              src="/images/site-logo.png" 
+              alt="ASU Create AI Builder Logo" 
+              className="h-full object-contain"
+            />
+          </div>
+          <h1 className="text-xl font-bold">CreateAI Builder</h1>
+        </div>
       </div>
       
       <nav className="p-4">
