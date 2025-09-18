@@ -301,7 +301,7 @@ const WhatsNew = () => {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-asu-maroon">What's new?</h1>
+        <h1 className="text-3xl font-bold text-black">What's new?</h1>
         <p className="text-gray-600">Latest updates and news about CreateAI Builder</p>
       </div>
       
@@ -309,9 +309,10 @@ const WhatsNew = () => {
       <div className="mb-12">
         <h2 className="text-2xl font-bold mb-6">Featured Updates</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* First item with video background */}
-          <div className="bg-white rounded-md shadow-md overflow-hidden relative h-80">
-            <div className="absolute inset-0 z-0">
+          {/* First item with video on top */}
+          <div className="bg-white rounded-md shadow-md overflow-hidden flex flex-col">
+            {/* Video area */}
+            <div className="h-48 overflow-hidden">
               <video 
                 src="https://cdn.openai.com/ctf-cdn/20250805_GPT-5_ArtCard_1920x1080_16x9_DZ_v20.mp4"
                 autoPlay
@@ -321,84 +322,64 @@ const WhatsNew = () => {
                 className="object-cover w-full h-full"
               />
             </div>
-            <div className="relative z-10 h-full flex flex-col justify-end bg-gradient-to-t from-black/80 to-transparent p-6 text-white">
-              <div className="block items-start mb-4">
-                <div>
-                  <h3 className="font-bold text-lg">{featuredItems[0].title}</h3>
-                  <p className="text-white/80 mb-2">{featuredItems[0].shortDescription}</p>
-                </div>
-              </div>
-              
-              <div className="text-white/90 mb-4 text-sm">
+            {/* Content area */}
+            <div className="p-5 flex-grow flex flex-col">
+              <h3 className="font-bold text-lg mb-2">{featuredItems[0].title}</h3>
+              <p className="text-gray-600 mb-3">{featuredItems[0].shortDescription}</p>
+              <div className="text-gray-700 text-sm mb-4 flex-grow">
                 <p>{featuredItems[0].tooltip}</p>
               </div>
-              
-              <div className="flex justify-between items-center text-sm mt-4">
-                <span className="text-white/70">
-                  {formatDate(featuredItems[0].date)}
-                </span>
+              <div className="text-sm text-gray-500">
+                {formatDate(featuredItems[0].date)}
               </div>
             </div>
           </div>
           
-          {/* Second item with site logo background */}
-          <div className="bg-white rounded-md shadow-md overflow-hidden relative h-80">
-            <div className="absolute inset-0 z-0 p-[20%] bg-gray-50 flex items-center justify-center">
+          {/* Second item with logo on top */}
+          <div className="bg-white rounded-md shadow-md overflow-hidden flex flex-col">
+            {/* Logo area */}
+            <div className="h-48 bg-gray-50 flex items-center justify-center p-[20%]">
               <img 
                 src="/images/site-logo.png" 
                 alt="ASU Create AI Builder Logo" 
-                className="object-contain w-full h-full"
+                className="object-contain max-h-full"
               />
             </div>
-            <div className="relative z-10 h-full flex flex-col justify-end bg-gradient-to-t from-white to-transparent p-6">
-              <div className="block items-start mb-4">
-                <div>
-                  <h3 className="font-bold text-lg">{featuredItems[1].title}</h3>
-                  <p className="text-gray-600 mb-2">{featuredItems[1].shortDescription}</p>
-                </div>
-              </div>
-              
-              <div className="text-gray-700 mb-4 text-sm">
+            {/* Content area */}
+            <div className="p-5 flex-grow flex flex-col">
+              <h3 className="font-bold text-lg mb-2">{featuredItems[1].title}</h3>
+              <p className="text-gray-600 mb-3">{featuredItems[1].shortDescription}</p>
+              <div className="text-gray-700 text-sm mb-4 flex-grow">
                 <p>{featuredItems[1].tooltip}</p>
               </div>
-              
-              <div className="flex justify-between items-center text-sm mt-4">
-                <span className="text-gray-500">
-                  {formatDate(featuredItems[1].date)}
-                </span>
+              <div className="text-sm text-gray-500">
+                {formatDate(featuredItems[1].date)}
               </div>
             </div>
           </div>
           
-          {/* Third item with O4-mini image background */}
-          <div className="bg-white rounded-md shadow-md overflow-hidden relative h-80">
-            <div className="absolute inset-0 z-0">
+          {/* Third item with image on top */}
+          <div className="bg-white rounded-md shadow-md overflow-hidden flex flex-col">
+            {/* Image area */}
+            <div className="h-48 overflow-hidden">
               <img 
                 src="https://cdn.openai.com/API/docs/images/model-page/model-art/o4-mini.jpg" 
                 alt="GPT-5 Visualization" 
                 className="object-cover w-full h-full"
               />
             </div>
-            <div className="relative z-10 h-full flex flex-col justify-end bg-gradient-to-t from-black/80 to-transparent p-6 text-white">
-              <div className="block items-start mb-4">
-                <div>
-                  <h3 className="font-bold text-lg">{featuredItems[2].title}</h3>
-                  <p className="text-white/80 mb-2">{featuredItems[2].shortDescription}</p>
-                </div>
-              </div>
-              
-              <div className="text-white/90 mb-4 text-sm">
+            {/* Content area */}
+            <div className="p-5 flex-grow flex flex-col">
+              <h3 className="font-bold text-lg mb-2">{featuredItems[2].title}</h3>
+              <p className="text-gray-600 mb-3">{featuredItems[2].shortDescription}</p>
+              <div className="text-gray-700 text-sm mb-4 flex-grow">
                 <p>{featuredItems[2].tooltip}</p>
               </div>
-              
-              <div className="flex justify-between items-center text-sm mt-4">
-                <span className="text-white/70">
-                  {formatDate(featuredItems[2].date)}
-                </span>
+              <div className="text-sm text-gray-500">
+                {formatDate(featuredItems[2].date)}
               </div>
             </div>
           </div>
-          
         </div>
       </div>
       
